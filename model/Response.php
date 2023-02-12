@@ -52,5 +52,23 @@ class Response
         } else {
             header('Cache-control:no-cache, no-store'); // if we don't want to cache the response, set the cache-control header to no-cache and no-store
         }
+
+        if (($this->_success !== false && $this->_success !== true) || !is_numeric($this->_httpStatusCode)) {
+            http_response_code(500); // if the success property is not a boolean, set the http response code to 500
+
+            $this->_responseData['statusCode'] = 500; // set the status code to 500
+            $this->_responseData['success'] = false; // set the success property to false
+            $this->addMessage('Response creation error'); // add a message to the messages array
+            $this->_responseData['messages'] = $this->_messages; // set the messages property to the messages array
+        } else {
+            http_response_code($this->_httpStatusCode); // if the success property is a boolean, set the http response code to the http status code property
+            $this->_responseData['statusCode'] = $this->_httpStatusCode; // set the status code to the http status code property
+            $this->_responseData['success'] = $this->_success; // set the success property to the success property
+            $this->_responseData['messages'] = $this->_messages; // set the messages property to the messages array
+            $this->_responseData['data'] = $this->_data; // set the data property to the data property
+
+        }
+
+        echo json_encode($this->_responseData); // encode the response data array to json and echo it
     }
 }
