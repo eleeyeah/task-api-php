@@ -1,16 +1,18 @@
 <?php
 
-class DB {
+class DB
+{
     private static $writeDBConnection;
     private static $readDBConnection; // the write and read variables main purpose is to make the scalability easier in the future
 
 
-    
 
-    public static function connectWriteDB() {
 
-        if(self::$writeDBConnection === null){
-            self::$writeDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8','root','root');
+    public static function connectWriteDB()
+    {
+
+        if (self::$writeDBConnection === null) {
+            self::$writeDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8', 'root', 'root');
             // PDO is the class that connects to the database
             // the first parameter is the connection string(host,db,charset), the second is the username and the third is the password
 
@@ -27,13 +29,14 @@ class DB {
         return self::$writeDBConnection;
     }
 
-    // the readDBConnection is the same as the writeDBConnection, the only difference is that the readDBConnection is used for the GET requests and the writeDBConnection is used for the POST, PUT and DELETE requests. this is because the GET requests are read only and the POST, PUT and DELETE requests are write only. this is to make sure that the database is not overloaded with requests 
+    // the readDBConnection is the same as the writeDBConnection, the only difference is that the readDBConnection is used for the GET requests and the writeDBConnection is used for the POST, PUT and DELETE requests. This is because the GET requests are read only and the POST, PUT and DELETE requests are write only. this is to make sure that the database is not overloaded with requests 
 
-    
-    public static function connectreadDB() {
 
-        if(self::$readDBConnection === null){
-            self::$readDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8','root','root');
+    public static function connectreadDB()
+    {
+
+        if (self::$readDBConnection === null) {
+            self::$readDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8', 'root', 'root');
             // PDO is the class that connects to the database
             // the first parameter is the connection string(host,db,charset), the second is the username and the third is the password
 
@@ -49,9 +52,4 @@ class DB {
 
         return self::$readDBConnection;
     }
-
-
-
-
-
 }
