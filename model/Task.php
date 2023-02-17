@@ -70,7 +70,7 @@ class Task
     public function setID($id)
     {
 
-        if (($id !== null) && (!is_numeric($id)) || $id <= 0 || $id > 9294967295 || (is_float($id)) || $id !== null) {
+        if (($id !== null) && (!is_numeric($id)) || $id <= 0 || $id > 9223372036854775807 || $this->_id !== null) {
             throw new TaskException('TaskID error - id must be a valid integer');
         }
         $this->_id = $id;
@@ -92,8 +92,8 @@ class Task
     public function setDescription($description)
     {
 
-        if (strlen($description) < 1 || strlen($description) > 255255255) {
-            throw new TaskException('Task description error - description must be between 1 and 255255255 characters');
+        if ($description !== null && strlen($description) > 16777215) { //The description must be between 1 and 16777215 characters. The strlen() function is used to get the length of a string
+            throw new TaskException('Task description error ');
         }
         $this->_description = $description;
     }
@@ -102,9 +102,10 @@ class Task
     //Check if the deadline is valid
     public function setDeadline($deadline)
     {
+        //! Find the correct way to format the date/time and check if the date/time is valid
 
-        if (($deadline !== null) && date_format(date_create_from_format('Y-m-d H:i:s', $deadline), 'Y-m-d H:i:s') !== $deadline) {
-            throw new TaskException('Task deadline error - must be a valid date');
+        if (($deadline !== null) && date_format(date_create_from_format('d/m/Y H:i', $deadline), 'd/m/Y H:i') != $deadline) {
+            throw new TaskException('Task deadline error - must be a valid date/time'); //The date_format() function is used to format a date/time according to a specified format and the date_create_from_format() function is used to create a DateTime object from a string with a specified format  
         }
         $this->_deadline = $deadline;
     }
