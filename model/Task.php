@@ -20,7 +20,20 @@ class Task
     private $_deadline;
     private $_completed;
 
-    // a construct method is used to create a new task object and set the values of the private variables to the values of the parameters of the construct method
+
+
+    // a construct method is used to create a new object and set the values of the private variables to the values of the parameters of the construct method based on the setters
+
+    public function __construct($id, $title, $description, $deadline, $completed)
+    {
+
+        $this->setID($id);
+        $this->setTitle($title);
+        $this->setDescription($description);
+        $this->setDeadline($deadline);
+        $this->setCompleted($completed);
+    }
+
 
 
     public function getID()
@@ -57,7 +70,7 @@ class Task
     public function setID($id)
     {
 
-        if (($id !== null) && (!is_numeric($id)) || $id <= 0 || $id > 9294967295 || (is_float($id)) || $id !== null) { 
+        if (($id !== null) && (!is_numeric($id)) || $id <= 0 || $id > 9294967295 || (is_float($id)) || $id !== null) {
             throw new TaskException('TaskID error - id must be a valid integer');
         }
         $this->_id = $id;
@@ -105,5 +118,19 @@ class Task
             throw new TaskException('Task completion error - must be Y or N');
         }
         $this->_completed = $completed;
+    }
+
+
+    //Convert the task object to an array
+
+    public function returnTaskAsArray()
+    {
+        $task = array();
+        $task['id'] = $this->getID();
+        $task['title'] = $this->getTitle();
+        $task['description'] = $this->getDescription();
+        $task['deadline'] = $this->getDeadline();
+        $task['completed'] = $this->getCompleted();
+        return $task;
     }
 }
