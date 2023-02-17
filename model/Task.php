@@ -102,7 +102,7 @@ class Task
     //Check if the deadline is valid
     public function setDeadline($deadline)
     {
-        //! Find the correct way to format the date/time and check if the date/time is valid
+
 
         if (($deadline !== null) && date_format(date_create_from_format('d/m/Y H:i', $deadline), 'd/m/Y H:i') != $deadline) {
             throw new TaskException('Task deadline error - must be a valid date/time'); //The date_format() function is used to format a date/time according to a specified format and the date_create_from_format() function is used to create a DateTime object from a string with a specified format  
