@@ -1,7 +1,7 @@
 <?php
 
-require_once('db.php'); // this line is to require the db.php file
-require_once('../model/Response.php'); // this line is to require the Response.php file in order to use the Response class
+require_once('dbController.php'); // this line is to require the db.php file
+require_once('../model/ResponseModel.php'); // this line is to require the Response.php file in order to use the Response class
 
 
 try {

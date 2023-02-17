@@ -1,6 +1,6 @@
 <?php
 
-require_once('Task.php');
+require_once('TaskModel.php');
 
 try {
     $task = new Task(1, 'Task 1 title ', 'This is task 1 description', '23/12/2023 12:00', 'N');
