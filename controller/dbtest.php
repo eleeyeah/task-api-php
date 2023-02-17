@@ -1,7 +1,7 @@
 <?php
 
 require_once('db.php'); // this line is to require the db.php file
-require_once('../model/Repsonse.php'); // this line is to require the Response.php file in order to use the Response class
+require_once('../model/Response.php'); // this line is to require the Response.php file in order to use the Response class
 
 
 try {
@@ -11,7 +11,7 @@ try {
     $response = new Response(); // this line is to create a new Response object based on the class Response and store it in the variable $response
     $response->setHttpStatusCode(500);
     $response->setSuccess(false);
-    $response->addMessage("Database connection error");
+    $response->addMessage($ex->getMessage()); // shows the error code
     $response->send();
     exit;
 }

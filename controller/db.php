@@ -6,13 +6,11 @@ class DB
     private static $readDBConnection; // the write and read variables main purpose is to make the scalability easier in the future
 
 
-
-
     public static function connectWriteDB()
     {
 
         if (self::$writeDBConnection === null) {
-            self::$writeDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8', 'root', 'root');
+            self::$writeDBConnection = new PDO('mysql:host=localhost;dbname=taskdb;charset=utf8', 'root', '');
             // PDO is the class that connects to the database
             // the first parameter is the connection string(host,db,charset), the second is the username and the third is the password
 
@@ -36,7 +34,7 @@ class DB
     {
 
         if (self::$readDBConnection === null) {
-            self::$readDBConnection = new PDO('mysql:host=localhost;dbname=task_db;charset=utf8', 'root', 'root');
+            self::$readDBConnection = new PDO('mysql:host=localhost;dbname=taskdb;charset=utf8', 'root', '');
             // PDO is the class that connects to the database
             // the first parameter is the connection string(host,db,charset), the second is the username and the third is the password
 
