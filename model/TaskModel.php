@@ -71,7 +71,7 @@ class Task
     {
 
         if (($id !== null) && (!is_numeric($id)) || $id <= 0 || $id > 9223372036854775807 || $this->_id !== null) {
-            throw new TaskException('TaskID error - id must be a valid integer');
+            throw new TaskException('TaskID error ');
         }
         $this->_id = $id;
     }
