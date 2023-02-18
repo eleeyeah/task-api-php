@@ -46,8 +46,8 @@ if (array_key_exists('taskid', $_GET)) {
 
         //attempt to query database table and get task:
         try {
-            
-            $query = $readDB->prepare('SELECT id, title, description, DATE_FORMAT(deadline, %d/%m/%Y %H:%i") as deadline, completed from tbltasks where id = :taskid');
+
+            $query = $readDB->prepare('SELECT id, title, description, DATE_FORMAT(deadline, "%d/%m/%Y %H:%i") as deadline, completed from tbltasks where id = :taskid');
             // SELECT is the SQL command that will be executed
             // the :taskid is a placeholder where we will bind a variable
             // the DATE_FORMAT is a MySQL function that will format the date to the format that we want
