@@ -63,12 +63,12 @@ if (array_key_exists('taskid', $_GET)) {
 
 
 
-            if ($rowCOunt === 0) {
+            if ($rowCount === 0) {
                 $response = new Response();
                 $response->setHttpStatusCode(404);
                 $response->setSuccess(false);
                 $response->addMessage('Task not found');
-                $reponse->send();
+                $response->send();
                 exit();
                 // if the query returned 0 rows, then the task was not found
                 // we send a 404 response
