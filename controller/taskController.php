@@ -1,13 +1,12 @@
 <?php
 
 require_once('dbController.php');
-require_once('../model/taskModel.php ');
-require_once('../model/responseModel.php');
+require_once('../model/TaskModel.php');
+require_once('../model/ResponseModel.php');
 
 
+// Set up connection to read and write to the database
 try {
-
-    // this is the connection to the database
     $writeDB = DB::connectWriteDB();
     $readDB = DB::connectReadDB();
 } catch (PDOException $ex) {
@@ -31,7 +30,7 @@ if (array_key_exists('taskid', $_GET)) {
 
     $taskid = $_GET['taskid'];
 
-    if ($taskid = '' || !is_numeric($taskid)) {
+    if ($taskid == '' || !is_numeric($taskid)) {
         $response = new Response();
         $response->setHttpStatusCode(400);
         $response->setSuccess(false);
@@ -41,13 +40,15 @@ if (array_key_exists('taskid', $_GET)) {
     }
 
 
-    // this is the query that will be executed in the database to GET DELETE UPDATE
+    // this is the query that will be executed in the database to GET a task
 
-    if ($_SERVER['REQUEST_METHOD' === 'GET']) {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
+        //attempt to query database table and get task:
         try {
-
-            $query = $readDB->prepare('select id, title, description, DATE_FORMAT(deadline, %d/%m/%Y %H:%i"), completed from tbltasks where id = :taskid');
+            
+            $query = $readDB->prepare('SELECT id, title, description, DATE_FORMAT(deadline, %d/%m/%Y %H:%i") as deadline, completed from tbltasks where id = :taskid');
+            // SELECT is the SQL command that will be executed
             // the :taskid is a placeholder where we will bind a variable
             // the DATE_FORMAT is a MySQL function that will format the date to the format that we want
 
@@ -119,16 +120,16 @@ if (array_key_exists('taskid', $_GET)) {
             $response->send();
             exit();
         } catch (PDOException $ex) {
-            error_log("Database query error - " . $ex);
+            error_log("Database query error - " . $ex, 0); // we log the error in the server
             $response = new Response();
             $response->setHttpStatusCode(500);
             $response->setSuccess(false);
-            $response->addMessage('Failed to get Task');
+            $response->addMessage($ex->getMessage());
             $response->send();
             exit();
         }
-    } elseif ($_SERVER['REQUEST_METHOD' === 'DELETE']) {
-    } elseif ($SERVER_METHOD['REQUEST_METHOD' === 'PATCH']) {
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    } elseif ($SERVER_METHOD['REQUEST_METHOD'] === 'PATCH') {
     } else {
     }
 }
