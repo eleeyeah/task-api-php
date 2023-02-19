@@ -40,7 +40,7 @@ if (array_key_exists('taskid', $_GET)) {
     }
 
 
-    // this is the query that will be executed in the database to GET a task
+    // GET REQUEST 
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
@@ -128,7 +128,57 @@ if (array_key_exists('taskid', $_GET)) {
             $response->send();
             exit();
         }
+
+
+
+    // DELETE REQUEST
+
     } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+
+        try {
+
+            $query = $writeDB->prepare('DELETE FROM tbltasks WHERE id = :taskid');
+            // we use the DELETE SQL command to delete the task from the database
+
+            $query->bindPAram(':taskid', $taskid, PDO::PARAM_INT);
+            // we bind the variable to the placeholder
+            // we make sure that the variable is an integer
+
+            $query->execute();
+
+            $rowCount = $query->rowCount(); // we check if the query returned any rows
+
+            if ($rowCount === 0) {
+                $response = new Response();
+                $response->setHttpStatusCode(404);
+                $response->setSuccess(false);
+                $response->addMessage('Task (id) not found');
+                $response->send();
+                exit();
+            }
+
+            $response = new Response();
+            $response->setHttpStatusCode(200);
+            $response->setSuccess(true);
+            $response->addMessage('Task successfully deleted');
+            $response->send();
+            exit();
+            // if the query was successful, then we send a 200 response
+
+
+        } catch (PDOException $ex) {
+            $response = new Response();
+            $response->setHttpStatusCode(500);
+            $response->setSuccess(false);
+            $response->addMessage('Failed to delete Task');
+            $response->send();
+            exit();
+        }
+
+    //! TO DO:
+    //UPDATE REQUEST
+
+
     } elseif ($SERVER_METHOD['REQUEST_METHOD'] === 'PATCH') {
     } else {
     }
