@@ -5,9 +5,9 @@ class Response
     private $_success; // boolean
     private $_httpStatusCode; // 200, 400, 500, etc
     private $_messages = array(); // array of messages
-    private $_data; // data to be returned to the user
-    private $_toCache = false; // if we want to cache the response
-    private $_responseData = array(); // array of data to be returned to the user
+    private $_data; // data to be returned to the user by the api 
+    private $_toCache = false; // if we want to cache the response or not
+    private $_responseData = array(); // array of data to be returned to the user 
 
     // constructor method
 
@@ -24,23 +24,24 @@ class Response
 
     public function addMessage($message)
     {
-        $this->_messages[] = $message; // add a message to the messages array
+        $this->_messages[] = $message; // add a message to the messages array 
 
     }
 
     public function setData($data)
     {
-        $this->_data = $data; // set the data property
+        $this->_data = $data; // set the data property to the data that we want to send to the user
 
     }
 
     public function toCache($toCache)
     {
-        $this->_toCache = $toCache; // set the toCache property
+        $this->_toCache = $toCache; // set the toCache property  
 
     }
 
     // send method
+    //the purpose of this is to send the response to the user by setting the headers and echoing the response data
 
     public function send()
     {
@@ -56,8 +57,8 @@ class Response
         if (($this->_success !== false && $this->_success !== true) || !is_numeric($this->_httpStatusCode)) {
             http_response_code(500); // if the success property is not a boolean, set the http response code to 500
 
-            $this->_responseData['statusCode'] = 500; // set the status code to 500
-            $this->_responseData['success'] = false; // set the success property to false
+            $this->_responseData['statusCode'] = 500; 
+            $this->_responseData['success'] = false; 
             $this->addMessage('Response creation error'); // add a message to the messages array
             $this->_responseData['messages'] = $this->_messages; // set the messages property to the messages array
         } else {

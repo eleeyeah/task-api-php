@@ -26,7 +26,7 @@ try {
 
 // this is the function that will handle the GET requests
 
-if (array_key_exists('taskid', $_GET)) {
+if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET request 
 
     $taskid = $_GET['taskid'];
 
@@ -42,7 +42,7 @@ if (array_key_exists('taskid', $_GET)) {
 
     // GET REQUEST 
 
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') { 
 
         //attempt to query database table and get task:
         try {
@@ -56,7 +56,7 @@ if (array_key_exists('taskid', $_GET)) {
             // the bindPARAM is to bind the variable to the placeholder 
             // the PDO::PARAM_INT is to make sure that the variable is an integer
 
-            $query->execute();
+            $query->execute(); 
 
 
             $rowCount = $query->rowCount(); // this is to check if the query returned any rows
@@ -138,7 +138,7 @@ if (array_key_exists('taskid', $_GET)) {
         try {
 
             $query = $writeDB->prepare('DELETE FROM tbltasks WHERE id = :taskid');
-            // we use the DELETE SQL command to delete the task from the database
+            // we use the DELETE SQL command to delete the task from the database 
 
             $query->bindPAram(':taskid', $taskid, PDO::PARAM_INT);
             // we bind the variable to the placeholder
@@ -182,4 +182,27 @@ if (array_key_exists('taskid', $_GET)) {
     } elseif ($SERVER_METHOD['REQUEST_METHOD'] === 'PATCH') {
     } else {
     }
-}
+ } 
+
+ // GET REQUEST FOR ALL TASKS completed or not completed
+ elseif (array_key_exists('completed', $_GET)) {
+    
+    $completed = $_GET['completed'];
+
+    if($completed !== 'Y' && $completed !== 'N') {
+        $response = new Response();
+        $response->setHttpStatusCode(400);   
+        $response->setSuccess(false);
+        $response->addMessage("Completed filter must be Y or N");
+        $response->send();
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        
+    }
+ }
+
+
+
+
