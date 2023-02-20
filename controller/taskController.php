@@ -199,7 +199,9 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        
+
+        // attempt to query database table and get task:
+        //! Continue here
     }
  }
 
