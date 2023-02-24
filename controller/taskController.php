@@ -42,7 +42,7 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
 
     // GET REQUEST 
 
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') { 
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         //attempt to query database table and get task:
         try {
@@ -56,7 +56,7 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
             // the bindPARAM is to bind the variable to the placeholder 
             // the PDO::PARAM_INT is to make sure that the variable is an integer
 
-            $query->execute(); 
+            $query->execute();
 
 
             $rowCount = $query->rowCount(); // this is to check if the query returned any rows
@@ -120,7 +120,7 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
             $response->send();
             exit();
         } catch (PDOException $ex) {
-            error_log("Database query error - " . $ex, 0); // we log the error in the server
+            error_log('Database query error : ' . $ex, 0); // we log the error in the server
             $response = new Response();
             $response->setHttpStatusCode(500);
             $response->setSuccess(false);
@@ -128,12 +128,11 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
             $response->send();
             exit();
         }
-
-
+    }
 
     // DELETE REQUEST
 
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
         try {
 
@@ -149,23 +148,25 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
             $rowCount = $query->rowCount(); // we check if the query returned any rows
 
             if ($rowCount === 0) {
+                // set the response to 404 if the task was not found
                 $response = new Response();
                 $response->setHttpStatusCode(404);
                 $response->setSuccess(false);
-                $response->addMessage('Task (id) not found');
+                $response->addMessage('Task not found');
                 $response->send();
                 exit();
             }
 
+            // set the response to 200 if the task was deleted successfully
             $response = new Response();
             $response->setHttpStatusCode(200);
             $response->setSuccess(true);
             $response->addMessage('Task successfully deleted');
             $response->send();
             exit();
-            // if the query was successful, then we send a 200 response
 
 
+            // if error with sql query return a json response with error message
         } catch (PDOException $ex) {
             $response = new Response();
             $response->setHttpStatusCode(500);
@@ -174,24 +175,28 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
             $response->send();
             exit();
         }
+    }
+
 
     //! TO DO:
     //UPDATE REQUEST
 
 
-    } elseif ($SERVER_METHOD['REQUEST_METHOD'] === 'PATCH') {
+    elseif ($SERVER_METHOD['REQUEST_METHOD'] === 'PATCH') {
     } else {
     }
- } 
+}
 
- // GET REQUEST FOR ALL TASKS completed or not completed
- elseif (array_key_exists('completed', $_GET)) {
-    
+// GET REQUEST FOR ALL TASKS completed or not completed
+elseif (array_key_exists('completed', $_GET)) {
+
+    // get completed from query string
     $completed = $_GET['completed'];
 
-    if($completed !== 'Y' && $completed !== 'N') {
+    // check if completed is Y or N
+    if ($completed !== 'Y' && $completed !== 'N') {
         $response = new Response();
-        $response->setHttpStatusCode(400);   
+        $response->setHttpStatusCode(400);
         $response->setSuccess(false);
         $response->addMessage("Completed filter must be Y or N");
         $response->send();
@@ -201,10 +206,70 @@ if (array_key_exists('taskid', $_GET)) {  // check if the taskid is in the GET r
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // attempt to query database table and get task:
-        //! Continue here
+        try {
+            // create the db query and bind the variable to the placeholder
+            $query = $readDB->prepare('SELECT id, title, description, DATE_FORMAT(deadline, "%d/%m/%Y %H:%i") as deadline, completed from tbltasks where completed like :completed');
+            $query->bindParam(':completed', $completed, PDO::PARAM_STR);
+            $query->execute();
+
+
+            $rowCount = $query->rowCount();
+
+            $taskArray = array();
+
+            // if the query returned any rows, then we will loop through the rows and add them to the task array
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                // create a new task object and pass the values from the database to the constructor
+                $task = new Task($row['id'], $row['title'], $row['description'], $row['deadline'], $row['completed']);
+
+                // add the task to the task array
+                $taskArray[] = $task->returnTaskAsArray();
+            }
+
+            // create the return data array
+            $returnData = array();
+            $returnData['rows returned'] = $rowCount;
+            $returnData['tasks'] = $taskArray;
+
+            // create the response object and set the response code to 200
+            $response = new Response();
+            $response->setHttpStatusCode(200);
+            $response->toCache(true);
+            $response->setSuccess(true);
+            $response->setData($returnData);
+            $response->send();
+            exit();
+
+        }
+        // if we get an error  with the query, then return and obj with the error message 
+        catch (TaskException $ex) {
+            $response = new Response();
+            $response->setHttpStatusCode(500);
+            $response->setSuccess(false);
+            $response->addMessage($ex->getMessage());
+            $response->send();
+            exit();
+        }
+        catch (PDOException $ex) {
+            error_log('Database Query Error: ' . $ex, 0);
+            $response = new Response();
+            $response->setHttpStatusCode(500);
+            $response->setSuccess(false);
+            $response->addMessage('Failed to get tasks', $ex->getMessage() );
+            $response->send();
+            exit();
+        }
     }
- }
+    else // if the request method is not GET return a 405 error(method not found)
+    {
+        $response = new Response();
+        $response->setHttpStatusCode(405);
+        $response->setSuccess(false);
+        $response->addMessage('Request method not allowed');
+        $response->send();
+        exit();
+        
+    }
 
-
-
-
+}
